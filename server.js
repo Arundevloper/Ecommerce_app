@@ -2,6 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/dbConnect.js";
 import cors from "cors";
+import authRoutes from "./routes/authRoute.js";
+
 
 //configure env
 dotenv.config();
@@ -20,6 +22,10 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("<h1>Welcome to ecommerce app</h1>");
 });
+
+
+//routes
+app.use("/api/v1/auth/", authRoutes);
 
 //Port
 const PORT = process.env.PORT || 5000;

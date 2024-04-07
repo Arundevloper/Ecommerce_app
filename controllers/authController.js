@@ -1,12 +1,18 @@
 import userModel from "../models/userModel.js";
 
-
 import { comparePassword, hashPassword } from "./../helpers/authHelper.js";
 import JWT from "jsonwebtoken";
 
 export const registerController = async (req, res) => {
   try {
-    const { name, email, password, phone, address, answer } = req.body;
+    const { name, email, password, phone, address, cpassword } = req.body;
+
+    if (!name && !email && !password && !phone && !address && !cpassword) {
+      return res.send({ message: "All Fields are required" });
+    }
+
+
+
     //validations
     if (!name) {
       return res.send({ error: "Name is Required" });
@@ -14,18 +20,24 @@ export const registerController = async (req, res) => {
     if (!email) {
       return res.send({ message: "Email is Required" });
     }
-    if (!password) {
-      return res.send({ message: "Password is Required" });
-    }
+
     if (!phone) {
       return res.send({ message: "Phone no is Required" });
     }
     if (!address) {
       return res.send({ message: "Address is Required" });
     }
-    if (!answer) {
-      return res.send({ message: "Answer is Required" });
+    if (!password) {
+      return res.send({ message: "Password is Required" });
     }
+    if (!cpassword) {
+      return res.send({ message: "Confirm password is Required" });
+    }
+
+    if (cpassword !== password) {
+      return res.send({ message: "Password does not match" });
+    }
+
     //check user
     const exisitingUser = await userModel.findOne({ email });
 
@@ -45,7 +57,6 @@ export const registerController = async (req, res) => {
       phone,
       address,
       password: hashedPassword,
-      answer,
     }).save();
 
     res.status(201).send({
@@ -66,9 +77,11 @@ export const registerController = async (req, res) => {
 //POST LOGIN
 export const loginController = async (req, res) => {
   try {
+
     const { email, password } = req.body;
     //validation
     if (!email || !password) {
+      console.log(1);
       return res.status(404).send({
         success: false,
         message: "Invalid email or password",
@@ -77,13 +90,15 @@ export const loginController = async (req, res) => {
     //check user
     const user = await userModel.findOne({ email });
     if (!user) {
-      return res.status(404).send({
+       //console.log(2);
+      return res.status(200).send({
         success: false,
         message: "Email is not registerd",
       });
     }
     const match = await comparePassword(password, user.password);
     if (!match) {
+      // console.log(3);
       return res.status(200).send({
         success: false,
         message: "Invalid Password",

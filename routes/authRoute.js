@@ -23,7 +23,17 @@ router.post("/login", loginController);
 //Forgot Password || POST
 router.post("/forgot-password", forgotPasswordController);
 
+router.get("/user-auth",requireSignIn,(req,res)=>{
+    console.log("i am accessign");
+    res.status(200).send({ok:true});
+})
 //test routes
 router.get("/test", requireSignIn, isAdmin,testController);
+
+//protected Admin route auth
+router.get("/admin-auth", requireSignIn, isAdmin, (req, res) => {
+  res.status(200).send({ ok: true });
+});
+
 
 export default router;

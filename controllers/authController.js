@@ -11,8 +11,6 @@ export const registerController = async (req, res) => {
       return res.send({ message: "All Fields are required" });
     }
 
-
-
     //validations
     if (!name) {
       return res.send({ error: "Name is Required" });
@@ -77,7 +75,6 @@ export const registerController = async (req, res) => {
 //POST LOGIN
 export const loginController = async (req, res) => {
   try {
-
     const { email, password } = req.body;
     //validation
     if (!email || !password) {
@@ -90,7 +87,7 @@ export const loginController = async (req, res) => {
     //check user
     const user = await userModel.findOne({ email });
     if (!user) {
-       //console.log(2);
+      //console.log(2);
       return res.status(200).send({
         success: false,
         message: "Email is not registerd",
@@ -108,6 +105,8 @@ export const loginController = async (req, res) => {
     const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
+
+    console.log("role" + user.role);
     res.status(200).send({
       success: true,
       message: "login successfully",
@@ -117,7 +116,7 @@ export const loginController = async (req, res) => {
         email: user.email,
         phone: user.phone,
         address: user.address,
-        role: user.role,
+        role:user.role,
       },
       token,
     });

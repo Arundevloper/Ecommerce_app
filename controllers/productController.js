@@ -74,6 +74,7 @@ export const getProductController = async (req, res) => {
   try {
     const products = await productModel
       .find({})
+      .select("-photo")
       .populate("category")
       .limit(12)
       .sort({ createdAt: -1 });
@@ -119,6 +120,28 @@ export const getSingleProductController = async (req, res) => {
     res.status(500).send({
       success: false,
       message: "Error while getting single product",
+      error,
+    });
+  }
+};
+
+// get single product
+export const getSingleProductsController = async (req, res) => {
+  try {
+    const product = await productModel
+      .findOne({ slug: req.params.slug })
+      .select("-photo")
+      .populate("category");
+    res.status(200).send({
+      success: true,
+      message: "Single Product Fetched",
+      product,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Eror while getitng single product",
       error,
     });
   }
@@ -225,8 +248,8 @@ export const updateProductController = async (req, res) => {
 export const productFiltersController = async (req, res) => {
   try {
     const { checked, radio } = req.body;
-    console.log("checked:", checked);
-    console.log("radio:", radio);
+    // console.log("checked:", checked);
+    // console.log("radio:", radio);
 
     let args = {};
 

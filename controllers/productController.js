@@ -6,6 +6,7 @@ import fs from "fs";
 import slugify from "slugify";
 //import braintree from "braintree";
 import dotenv from "dotenv";
+import { createHmac } from "crypto";
 
 dotenv.config();
 
@@ -224,23 +225,37 @@ export const updateProductController = async (req, res) => {
 export const productFiltersController = async (req, res) => {
   try {
     const { checked, radio } = req.body;
+    console.log("checked:", checked);
+    console.log("radio:", radio);
+
     let args = {};
-    if (checked.length > 0) args.category = checked;
-    if (radio.length) args.price = { $gte: radio[0], $lte: radio[1] };
+
+    // Check if checked is an array and has elements
+    if (Array.isArray(checked) && checked.length > 0) {
+      args.category = checked;
+    }
+
+    // Check if radio is an array and has exactly 2 elements
+    if (Array.isArray(radio) && radio.length === 2) {
+      args.price = { $gte: radio[0], $lte: radio[1] };
+    }
+
     const products = await productModel.find(args);
+
     res.status(200).send({
       success: true,
       products,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(400).send({
       success: false,
-      message: "Error WHile Filtering Products",
-      error,
+      message: "Error while filtering products",
+      error: error.message, // Sending only the error message to the client for security reasons
     });
   }
 };
+
 
 // product count
 export const productCountController = async (req, res) => {

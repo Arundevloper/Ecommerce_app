@@ -41,4 +41,7 @@ router.delete(
   deleteCategoryCOntroller
 );
 
+//single category
+router.get("/single-category/:slug", singleCategoryController);
+
 export default router;

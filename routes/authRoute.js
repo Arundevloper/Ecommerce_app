@@ -8,7 +8,7 @@ import {
   getOrdersController,
   getAllOrdersController,
   orderStatusController,
-  
+  updateProfileController
 } from "../controllers/authController.js";
 
 import { isAdmin, requireSignIn } from "../middlewares/authMiddleware.js";
@@ -30,6 +30,12 @@ router.get("/user-auth",requireSignIn,(req,res)=>{
     console.log("i am accessign");
     res.status(200).send({ok:true});
 })
+
+
+//update profile
+router.put("/profile", requireSignIn, updateProfileController);
+
+
 //test routes
 router.get("/test", requireSignIn, isAdmin,testController);
 
@@ -41,6 +47,8 @@ router.get("/admin-auth", requireSignIn, isAdmin, (req, res) => {
 //orders
 router.get("/orders", requireSignIn, getOrdersController);
 
+
+
 //all orders
 router.get("/all-orders", requireSignIn, isAdmin, getAllOrdersController);
 
@@ -49,6 +57,12 @@ router.put(
   "/order-status/:orderId",
   requireSignIn,
   isAdmin,
+  orderStatusController
+);
+// order status update
+router.put(
+  "/orders/:orderId",
+  requireSignIn,
   orderStatusController
 );
 

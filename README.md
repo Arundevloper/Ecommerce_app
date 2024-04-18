@@ -4,7 +4,7 @@
 - MongoDB
 - Express.js
   ## Clone the Repository
-git clone <repository_url>
+git clone https://github.com/Arundevloper/Ecommerce_app.git
 
 ## Navigate to the Root Directory
 cd Ecommerce_app
